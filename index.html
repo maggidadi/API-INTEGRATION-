@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      text-align: center;
+      padding: 30px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+    #weather {
+      font-size: 18px;
+      margin-top: 20px;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h2>🌤️ Weather Info App</h2>
+  <input type="text" id="city" placeholder="Enter City Name" />
+  <button onclick="getWeather()">Get Weather</button>
+
+  <div id="weather"></div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById('city').value.trim();
+      const apiKey = '7f2f3f85ee9df3de6c1f8c68d73f2251';
+      if (!city) {
+        alert('Please enter a city name!');
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+        );
+        if (!response.ok) throw new Error("City not found");
+
+        const data = await response.json();
+        const weatherInfo = `
+          <strong>${data.name}, ${data.sys.country}</strong><br>
+          Temperature: ${data.main.temp}°C<br>
+          Weather: ${data.weather[0].description}<br>
+          Humidity: ${data.main.humidity}%<br>
+          Wind Speed: ${data.wind.speed} m/s
+        `;
+        document.getElementById('weather').innerHTML = weatherInfo;
+      } catch (error) {
+        document.getElementById('weather').innerHTML = `<span style="color: red;">${error.message}</span>`;
+      }
+    }
+  </script>
+</body>
+</html>
